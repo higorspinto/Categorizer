@@ -11,9 +11,9 @@ websites.
 
 ## Installing
 
-'''
+```
 pip install -i https://test.pypi.org/simple/ categorizer-higorspinto==0.0.1
-'''
+```
 
 ## Using
 
