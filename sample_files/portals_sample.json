@@ -1,0 +1,79 @@
+[ 
+	{
+        "name": "NYC Open Data",
+        "url": "https://opendata.cityofnewyork.us/data/",
+        "coord": "40.6643°N 73.9385°W",
+        "categorization": "Categories",
+        "platform": "Socrata",
+        "categories": [
+            "Business",
+            "City Government",
+            "Education",
+            "Environment",
+            "Health",
+            "Housing & Development",
+            "Public Safety",
+            "Recreation",
+            "Social Services",
+            "Transportation"
+        ]
+	},
+    {
+        "name": "Chicago Open Data",
+        "url": "https://data.cityofchicago.org/browse",
+        "coord": "41.8376°N 87.6818°W",
+        "categorization": "Categories",
+        "platform": "Socrata",
+        "categories": [
+            "Administration & Finance",
+            "Buildings",
+            "Community",
+            "Education",
+            "Environment",
+            "Ethics",
+            "Events",
+            "FOIA",
+            "Facilities & Geo. Boundaries ",
+            "Health & Human Services",
+            "Historic Preservation",
+            "Parks & Recreation",
+            "Public Safety",
+            "Sanitation",
+            "Service Requests",
+            "Transportation"
+        ]
+    },
+	{
+        "name": "Phoenix Open Data",
+        "url": "https://www.phoenix.gov/opendata",
+        "coord": "33.5722°N 112.0880°W",
+        "categorization": "Categories",
+        "platform": "-",
+        "categories": [
+            "Census Data",
+            "CheckBook & Sales Tax",
+            "Energy & Sustainability",
+            "Neighborhood & Safety",
+            "Parks, Art & Culture",
+            "Property & Development",
+            "Staff Salaries",
+            "Transportation"
+        ]
+    },
+	{
+        "name": "Dallas Open Data",
+        "url": "https://www.dallasopendata.com/",
+        "coord": "32.7757°N 96.7967°W",
+        "categorization": "Categories",
+        "platform": "Socrata",
+        "categories": [
+            "Budget & Finance",
+            "City Infrastructure",
+            "City Services",
+            "Economic Development",
+            "Geography & Boundaries",
+            "Government",
+            "Public Safety"
+        ]
+    }
+]
