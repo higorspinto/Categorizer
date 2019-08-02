@@ -6,14 +6,14 @@ It helps when you need to produce a Website that stores categorized information 
 
 For instance, we can create a Website that stores news from several news websites.
 Each news has one or more categories. These different websites categorized the news in their ways. 
-Using this module we can produce just one set of categories to represent all the news in the several 
+Using this module we can produce just one set of categories to represent all the news from several 
 websites.
 
 ## Installing
 
-'''
+```
 pip install -i https://test.pypi.org/simple/ categorizer-higorspinto==0.0.1
-'''
+```
 
 ## Using
 
