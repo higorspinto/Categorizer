@@ -16,7 +16,7 @@ You need to create a JSON File to input the Website data into the package.
 
 This is the format of the JSON file that you need to create:
 
-'''
+```
 [ 
 	{
         "name": "NYC Open Data",
@@ -58,17 +58,17 @@ This is the format of the JSON file that you need to create:
     },
 ]
 
-'''
+```
 
 We provide a sample file to test the package. This sample file contains data from 10 American cities
 Open Data Portals.
 
 ## Installing
 
-Installing the package from PyPi repository:
+Clone repository from git:
 
 ```
-pip install -i categorizer
+git clone https://github.com/higorspinto/Categorizer.git
 ```
 
 ## Using
@@ -123,6 +123,12 @@ print(common_categories)
 
 ## Dependencies 
 
-Dependencies will be automatically installed by pip install.
-
 NLTK 3.4.4 (https://pypi.org/project/nltk/)
+
+Dependencies can be installed using requirements.txt.
+
+```
+pip install -r requirements.txt
+```
+
+
