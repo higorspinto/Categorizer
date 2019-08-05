@@ -22,8 +22,8 @@ import random
 from collections import namedtuple
 from collections import OrderedDict
 
-from categorizer.models import Website
-from categorizer.nlp import NLP
+from models import Website
+from nlp import NLP
 
 #namedtuple to store the frequency of a category - CategoryFreq(category, freq)
 CategoryFreq = namedtuple('CategoryFreq', 'category freq')
