@@ -6,11 +6,6 @@ The module reads the categories that belong to the websites and produces a list 
 in the Websites.
 It helps when you need to produce a Website that stores categorized information from other websites.
 
-For instance, we can create a Website that stores news from several news websites.
-Each news has one or more categories. These different websites categorized the news in their ways. 
-Using this module we can produce just one set of categories to represent all the news in the several 
-websites that we want to read and store or refer them to just one website.
-
 This module is the main module of Categorizer.
 You can create this object in your code and call the methods.
 """
@@ -21,6 +16,7 @@ import random
 
 from collections import namedtuple
 from collections import OrderedDict
+from collections import Counter
 
 from categorizer.models import Website
 from categorizer.nlp import NLP
@@ -49,7 +45,7 @@ class Categorizer:
         list created to store all categories from the Websites.
         store this list reduces reprocessing.
         this variable needs to treated as private.
-        Call method all_categories() instead call this variable
+        Call method all_categories() instead call this variable.
 
     Methods
     -------
@@ -144,8 +140,10 @@ class Categorizer:
         """    
 
         if not self._all_categories:
-            #reads all categories from all Websites
+            
             self._all_categories = list()
+
+            #reads all categories from all Websites
             for website in self.websites:
                 self._all_categories.extend(website.categories)
 
@@ -180,7 +178,7 @@ class Categorizer:
     def category_frequency(self, category) -> CategoryFreq:
 
         """
-        Returns the frequency of a category in all Websites.
+        Returns the a namedTuple that represents the frequency of a category in all Websites.
 
         Parameters
         ----------
@@ -188,10 +186,8 @@ class Categorizer:
             Category to count frequency in all categories of all Websites.
         """
         
-        all_categories = self.all_categories()
-        
         #counts the frequency of a category in all categories of Websites
-        freq_category = all_categories.count(category)
+        freq_category = self.all_categories().count(category)
 
         #create a namedtuple CategoryFreq to return
         categoryFreq = CategoryFreq(category = category, freq = freq_category)
@@ -202,7 +198,7 @@ class Categorizer:
     def common_words(self, num_words):
 
         """
-        Returns the most frequent words in the categories of all Websites.
+        Returns the most common words in the categories of all Websites.
 
         The method reads categories from all websites and creates a list of tokens
         without stop words. Then, for each token, it counts the frequency of the token
@@ -214,25 +210,20 @@ class Categorizer:
             The number of the most frequent words returned by the method.
         
         """
-        words = self.tokenizer(self.all_categories())
+        #obtaining all words cointained in the categories of the websites
+        all_words = self.tokenizer(self.all_categories())
 
-        #dict to store a word as key and the frequency of the word in all categories as value
-        dict_word_freq = dict()
-        for word in words: 
+        #a dict Counter to store a word as key and the frequency of the word in all categories as value
+        word_freq = Counter()
+        for word in all_words: 
 
             #if the word exists in the dict, then the frequency was already counted
-            if word in dict_word_freq: continue
+            if word in word_freq: continue
                 
-            freq_word = words.count(word)
-            dict_word_freq.update({word : freq_word})
+            freq = all_words.count(word)
+            word_freq.update({word : freq})
 
-        #create a dict ordered by frequency of word
-        dict_word_freq_ord = OrderedDict(sorted(dict_word_freq.items(),
-                            key = operator.itemgetter(1),
-                            reverse = True))
-
-        #returns the first (num_words) words in the list of dict keys
-        return list(dict_word_freq_ord.keys())[:num_words]
+        return word_freq.most_common(num_words)
 
     def common_categories(self, num_categories):
 
@@ -262,7 +253,7 @@ class Categorizer:
         #obtaining the common_words
         common_words = self.common_words(num_categories)
 
-        for common_word in common_words:
+        for common_word, freq in common_words:
             
             #obtaining all categories that contain the common_word
             categories_containing_word = self.categories_containing_word(common_word)
