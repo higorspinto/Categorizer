@@ -1,10 +1,9 @@
 """ 
 Categorizer
 
-Module created to align categories of different websites.
-The module reads the categories that belong to the websites and produces a list of frequent categories
-in the Websites.
-It helps when you need to produce a Website that stores categorized information from other websites.
+Module created to obtain the frequent categories of a set of Websites.
+The module reads the categories from Websites and produces a list of frequent categories.
+It helps when you need to produce a Website that stores categorized information from other Websites.
 
 This module is the main module of Categorizer.
 You can create this object in your code and call the methods.
@@ -15,7 +14,6 @@ import operator
 import random 
 
 from collections import namedtuple
-from collections import OrderedDict
 from collections import Counter
 
 from categorizer.models import Website
@@ -59,11 +57,20 @@ class Categorizer:
         Returns all categories of all Websites.
         Call this method instead call variable _all_categories()
     
-    categories_containing_words()
-        Returns the categories that contains the word.
+    categories_containing_words(word : str)
+        Returns the non repeated categories that contains the word.
+
+    category_frequency(category : str)
+        Returns a namedTuple - CategoryFreq(category,feq) - that represents the frequency 
+        of a category in all Websites.
+
+    max_category_frequency(lst_category_freq : list)       
+        Returns a list of namedTuple - CategoryFreq(category,freq) - that have the max frequency 
+        in passed list.
 
     common_words(num_words : int)
-        Returns the most frequent words in the categories of all Websites.
+        Returns a list of namedTuple that represent the most frequent words in the categories 
+        of all Websites.
     
     common_categories(num_categories : int)
         Returns the most frequently categories in the Websites based on the most frequent words. 
@@ -117,7 +124,6 @@ class Categorizer:
     def tokenizer(self, string_list) -> list():
 
         """
-        Call functions from NLP module to tokenize and filter a list of strings.
         Returns a list of strings tokenized and filtered.
 
         Parameters
@@ -125,6 +131,8 @@ class Categorizer:
         string_list : str
             A list of strings to tokenize and filter
         """
+
+        #Call functions from NLP module to tokenize and filter a list of strings.
 
         tokens = NLP.tokenizer(string_list) 
         words = NLP.filter_tokens(tokens, self.words_without_semantic)
@@ -135,7 +143,7 @@ class Categorizer:
 
         """
         Returns all the categories from all Websites.
-        Call this method instead call variable _all_categories
+        Call this method instead call variable _all_categories.
         
         """    
 
@@ -152,7 +160,7 @@ class Categorizer:
     def categories_containing_word(self, word) -> list():
 
         """
-        Returns the categories that contains the word.
+        Returns a list of strings with non repeated categories that contains the word.
 
         Parameters
         ----------
@@ -173,12 +181,14 @@ class Categorizer:
             if word in tokens:
                 categories.append(category)
 
-        return categories
+        # return non repeated categories
+        return list(set(categories))
     
     def category_frequency(self, category) -> CategoryFreq:
 
         """
-        Returns the a namedTuple that represents the frequency of a category in all Websites.
+        Returns a namedTuple - CategoryFreq(category,feq) - that represents the frequency 
+        of a category in all Websites.
 
         Parameters
         ----------
@@ -194,14 +204,34 @@ class Categorizer:
 
         return categoryFreq
 
+    def max_category_frequency(self, lst_category_freq) -> list() :       
+        """
+        Returns a list of namedTuple - CategoryFreq(category,freq) - that have the max freq 
+        in passed list.
 
-    def common_words(self, num_words):
+        Parameters
+        ----------
+        lst_category_freq : list
+            List of namedTuple CategoryFreq
+        """
+
+        # obtaining the highest frequency of the categories
+        # built in function max returns a namedTuple
+        max_freq = max(lst_category_freq, key=lambda category_freq: category_freq.freq).freq
+
+        highest_frequency_categories = list()
+        for categoryFreq in lst_category_freq:
+            # testing if the category has the same frequency of the highest frequency
+            if categoryFreq.freq == max_freq:
+                highest_frequency_categories.append(categoryFreq) 
+
+        return highest_frequency_categories
+
+
+    def common_words(self, num_words) -> list():
 
         """
-        Returns the most common words in the categories of all Websites.
-
-        The method reads categories from all websites and creates a list of tokens
-        without stop words. Then, for each token, it counts the frequency of the token
+        Returns a list of tuples - (word, freq) - that represent the most common words 
         in the categories of all Websites.
 
         Parameters
@@ -210,6 +240,11 @@ class Categorizer:
             The number of the most frequent words returned by the method.
         
         """
+
+        #The method reads categories from all websites and creates a list of tokens
+        #without stop words. Then, for each token, it counts the frequency of the token
+        #in the categories of all Websites.
+
         #obtaining all words cointained in the categories of the websites
         all_words = self.tokenizer(self.all_categories())
 
@@ -225,21 +260,11 @@ class Categorizer:
 
         return word_freq.most_common(num_words)
 
-    def common_categories(self, num_categories):
+    def common_categories(self, num_categories) -> list():
 
         """
-        Returns the most frequent categories in the Websites based on the most frequent words. 
-        
-        We use common words in the categories of the Websites to compose a list of common
-        categories.
-        For each common word in the categories of all Websites, the method counts the frequency 
-        of each category that contains the common word. 
-        The most frequent category for each common word is elected as a frequent category.
-        If exists more than one frequent category, the method randonly chooses one of the frequent
-        category list.
-
-        This method may return similar categories. Then you can choose if you want to use 
-        all categories returned or some of them.
+        Returns a list of most common categories and their frequencies in the Websites 
+        based on the most frequent words. 
 
         Parameters
         ----------
@@ -247,6 +272,12 @@ class Categorizer:
             The number of the most frequent categories will be returned by the method.
         
         """
+
+        #We use common words in the categories of the Websites to compose a list of common categories.
+        #For each common word in the categories of all Websites, the method counts the frequency 
+        #of each category that contains the common word. 
+        #The most frequent category for each common word is elected as a frequent category.
+        #If exists more than one frequent category, the method turns the common word a category.
 
         common_categories = list()
 
@@ -266,35 +297,20 @@ class Categorizer:
                 lst_category_freq.append(self.category_frequency(category))
             
             if len(lst_category_freq) == 0 : continue
-
-            # sorting list of namedtuples CategoryFreq
-            lst_category_freq.sort(key=lambda r: r.freq, reverse=True)
-
-            # obtaining the highest frequency of the categories
-            # the highest_frequency is in the first element of the list,
-            # since the list is sorted in frequency order
-            highest_frequency = lst_category_freq[0].freq
-
-            # other categories may have the same frequency
-            # so we randomly choose one category 
-            highest_frequency_categories = list()
-            for categoryFreq in lst_category_freq:
-
-                # testing if the category has the same frequency of the highest frequency
-                if categoryFreq.freq == highest_frequency:
-                    # testing if one equal category exists in the list of common categories
-                    if categoryFreq.category not in common_categories:
-                        # adding all highest frequent categories in the common categories list 
-                        highest_frequency_categories.append(categoryFreq.category) 
-                else:
-                    # if the frequency of a category is less than the highest frequent category,
-                    # it doesn't need to test anymore.
-                    break
-
-            #randomly choose one category from the highest frequency list
-            common_categories.append(random.choice(highest_frequency_categories))
             
-        return common_categories
+            # a list of namedTuple with highest frequency
+            highest_frequency_categories = self.max_category_frequency(lst_category_freq)
+
+            # testing with exists only one category in highest_frequency_categories
+            if len(highest_frequency_categories) == 1:
+                #getting the first element
+                common_categories.append(highest_frequency_categories[0])
+            else:
+                #turns the common word a category
+                common_categories.append(CategoryFreq(category=common_word.capitalize(),freq=freq))
+
+        #returning a list of categories instead a list of namedTuples    
+        return [categoryFreq.category for categoryFreq in common_categories]
 
 
                 
